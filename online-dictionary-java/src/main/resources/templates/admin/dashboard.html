@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Адміністрування словника</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <h1>Адміністрування словника</h1>
+        <p>Створення, редагування та видалення мов, слів і перекладів</p>
+    </div>
+    <nav>
+        <a th:href="@{/}">Головна</a>
+        <form th:action="@{/logout}" method="post" class="inline-form">
+            <button type="submit" class="link-button">Вийти</button>
+        </form>
+    </nav>
+</header>
+
+<main class="container">
+    <div th:if="${success}" class="success" th:text="${success}"></div>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <section class="grid two-columns">
+        <div class="card">
+            <h2>Додати слово</h2>
+            <form class="vertical-form" th:action="@{/admin/words}" method="post">
+                <label>
+                    Слово
+                    <input type="text" name="text" required>
+                </label>
+                <label>
+                    Мова
+                    <select name="languageId" required>
+                        <option th:each="language : ${languages}" th:value="${language.id}" th:text="${language.name}"></option>
+                    </select>
+                </label>
+                <button type="submit">Додати слово</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Додати переклад</h2>
+            <form class="vertical-form" th:action="@{/admin/translations}" method="post">
+                <div class="form-row">
+                    <label>
+                        Початкове слово
+                        <input type="text" name="sourceText" required>
+                    </label>
+                    <label>
+                        Мова
+                        <select name="sourceLanguageId" required>
+                            <option th:each="language : ${languages}" th:value="${language.id}" th:text="${language.name}"></option>
+                        </select>
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>
+                        Переклад
+                        <input type="text" name="targetText" required>
+                    </label>
+                    <label>
+                        Мова перекладу
+                        <select name="targetLanguageId" required>
+                            <option th:each="language : ${languages}" th:value="${language.id}" th:text="${language.name}"></option>
+                        </select>
+                    </label>
+                </div>
+                <label>
+                    Примітка
+                    <input type="text" name="note" placeholder="Наприклад: іменник, дієслово, розмовне">
+                </label>
+                <button type="submit">Додати переклад</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="section-header">
+            <h2>Мови</h2>
+            <a class="button secondary" th:href="@{/admin/languages/new}">Додати мову</a>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Код</th>
+                <th>Назва</th>
+                <th>Дії</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="language : ${languages}">
+                <td th:text="${language.id}"></td>
+                <td th:text="${language.code}"></td>
+                <td th:text="${language.name}"></td>
+                <td class="actions">
+                    <a class="button small" th:href="@{/admin/languages/{id}/edit(id=${language.id})}">Редагувати</a>
+                    <form th:action="@{/admin/languages/{id}/delete(id=${language.id})}" method="post" class="inline-form">
+                        <button class="danger small" type="submit">Видалити</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="card">
+        <h2>Слова</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Слово</th>
+                <th>Мова</th>
+                <th>Дії</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="word : ${words}">
+                <td th:text="${word.id}"></td>
+                <td th:text="${word.text}"></td>
+                <td th:text="${word.language.name}"></td>
+                <td>
+                    <form th:action="@{/admin/words/{id}/delete(id=${word.id})}" method="post" class="inline-form">
+                        <button class="danger small" type="submit">Видалити</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="card">
+        <h2>Переклади</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Слово</th>
+                <th>Переклад</th>
+                <th>Примітка</th>
+                <th>Дії</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="translation : ${translations}">
+                <td th:text="${translation.id}"></td>
+                <td th:text="${translation.sourceWord.text + ' (' + translation.sourceWord.language.code + ')'}"></td>
+                <td th:text="${translation.targetWord.text + ' (' + translation.targetWord.language.code + ')'}"></td>
+                <td th:text="${translation.note}"></td>
+                <td>
+                    <form th:action="@{/admin/translations/{id}/delete(id=${translation.id})}" method="post" class="inline-form">
+                        <button class="danger small" type="submit">Видалити</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

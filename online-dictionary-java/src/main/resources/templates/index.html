@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Онлайн словник</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <h1>Онлайн словник</h1>
+        <p>Пошук перекладів між різними мовами</p>
+    </div>
+    <nav>
+        <a th:href="@{/}">Головна</a>
+        <a th:href="@{/admin}">Адміністратор</a>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="card hero">
+        <h2>Знайти переклад</h2>
+        <form class="search-form" th:action="@{/translate}" method="get">
+            <label>
+                Мова слова
+                <select name="sourceLanguageId" required>
+                    <option th:each="language : ${languages}"
+                            th:value="${language.id}"
+                            th:selected="${sourceLanguageId != null and sourceLanguageId == language.id}"
+                            th:text="${language.name}"></option>
+                </select>
+            </label>
+
+            <label>
+                Мова перекладу
+                <select name="targetLanguageId" required>
+                    <option th:each="language : ${languages}"
+                            th:value="${language.id}"
+                            th:selected="${targetLanguageId != null and targetLanguageId == language.id}"
+                            th:text="${language.name}"></option>
+                </select>
+            </label>
+
+            <label class="wide">
+                Слово або частина слова
+                <input type="text" name="query" placeholder="Наприклад: кіт" th:value="${query}" required>
+            </label>
+
+            <button type="submit">Перекласти</button>
+        </form>
+    </section>
+
+    <section class="card" th:if="${results != null}">
+        <h2>Результати пошуку</h2>
+        <p th:if="${#lists.isEmpty(results)}" class="muted">Переклад не знайдено. Спробуйте інше слово або змініть мови.</p>
+
+        <table th:if="${!#lists.isEmpty(results)}">
+            <thead>
+            <tr>
+                <th>Слово</th>
+                <th>Мова</th>
+                <th>Переклад</th>
+                <th>Мова перекладу</th>
+                <th>Примітка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="translation : ${results}">
+                <td th:text="${translation.sourceWord.text}"></td>
+                <td th:text="${translation.sourceWord.language.name}"></td>
+                <td class="result" th:text="${translation.targetWord.text}"></td>
+                <td th:text="${translation.targetWord.language.name}"></td>
+                <td th:text="${translation.note}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

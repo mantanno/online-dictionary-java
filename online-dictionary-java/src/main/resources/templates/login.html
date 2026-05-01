@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вхід адміністратора</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <h1>Панель адміністратора</h1>
+        <p>Вхід для керування словником</p>
+    </div>
+    <nav><a th:href="@{/}">Головна</a></nav>
+</header>
+
+<main class="container small">
+    <section class="card">
+        <h2>Авторизація</h2>
+        <p class="muted">Логін: <b>admin</b>, пароль: <b>admin123</b></p>
+        <form class="vertical-form" th:action="@{/login}" method="post">
+            <label>
+                Логін
+                <input type="text" name="username" required autofocus>
+            </label>
+            <label>
+                Пароль
+                <input type="password" name="password" required>
+            </label>
+            <button type="submit">Увійти</button>
+            <p th:if="${param.error}" class="error">Неправильний логін або пароль.</p>
+            <p th:if="${param.logout}" class="success">Ви вийшли з системи.</p>
+        </form>
+    </section>
+</main>
+</body>
+</html>

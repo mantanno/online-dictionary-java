@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мова</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar">
+    <div>
+        <h1>Мова словника</h1>
+        <p>Створення або редагування мови</p>
+    </div>
+    <nav><a th:href="@{/admin}">Назад</a></nav>
+</header>
+
+<main class="container small">
+    <section class="card">
+        <form class="vertical-form" th:action="@{/admin/languages}" th:object="${language}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <label>
+                Код мови
+                <input type="text" th:field="*{code}" placeholder="uk, en, de" required>
+                <span class="error" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></span>
+            </label>
+            <label>
+                Назва мови
+                <input type="text" th:field="*{name}" placeholder="Українська" required>
+                <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </label>
+            <button type="submit">Зберегти</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>
